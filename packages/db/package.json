@@ -2,6 +2,7 @@
   "name": "@trend/db",
   "private": true,
   "scripts": {
+    "postinstall": "prisma generate",
     "migrate": "prisma migrate dev",
     "seed": "ts-node prisma/seed.ts"
   },
