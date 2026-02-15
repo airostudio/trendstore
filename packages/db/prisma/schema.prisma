@@ -8,10 +8,24 @@ datasource db {
 }
 
 
-enum TenancyMode { SAAS SELF_HOSTED }
-enum Role { OWNER ADMIN MANAGER SUPPORT MARKETING READONLY }
+enum TenancyMode {
+  SAAS
+  SELF_HOSTED
+}
+enum Role {
+  OWNER
+  ADMIN
+  MANAGER
+  SUPPORT
+  MARKETING
+  READONLY
+}
 
-enum ProductStatus { DRAFT PUBLISHED ARCHIVED }
+enum ProductStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
 enum OrderStatus {
   DRAFT
   PENDING_PAYMENT
@@ -24,12 +38,43 @@ enum OrderStatus {
   RETURNED
   REFUNDED
 }
-enum PaymentStatus { REQUIRES_ACTION PROCESSING SUCCEEDED FAILED REFUNDED PARTIALLY_REFUNDED }
-enum FulfillmentStatus { UNFULFILLED PARTIAL FULFILLED }
-enum ReturnStatus { REQUESTED APPROVED REJECTED RECEIVED REFUNDED CLOSED }
-enum DiscountType { PERCENT FIXED FREE_SHIPPING }
-enum DiscountAppliesTo { ORDER SHIPPING PRODUCT }
-enum ImportStatus { QUEUED RUNNING COMPLETED FAILED }
+enum PaymentStatus {
+  REQUIRES_ACTION
+  PROCESSING
+  SUCCEEDED
+  FAILED
+  REFUNDED
+  PARTIALLY_REFUNDED
+}
+enum FulfillmentStatus {
+  UNFULFILLED
+  PARTIAL
+  FULFILLED
+}
+enum ReturnStatus {
+  REQUESTED
+  APPROVED
+  REJECTED
+  RECEIVED
+  REFUNDED
+  CLOSED
+}
+enum DiscountType {
+  PERCENT
+  FIXED
+  FREE_SHIPPING
+}
+enum DiscountAppliesTo {
+  ORDER
+  SHIPPING
+  PRODUCT
+}
+enum ImportStatus {
+  QUEUED
+  RUNNING
+  COMPLETED
+  FAILED
+}
 
 model Tenant {
   id            String   @id @default(cuid())
@@ -55,12 +100,13 @@ model Tenant {
   carts         Cart[]
   orders        Order[]
 
-  discounts     Discount[]
-  giftCards     GiftCard[]
-  storeCredits  StoreCreditLedger[]
-  loyaltyRules  LoyaltyRule[]
-  affiliates    Affiliate[]
-  subscribers   NewsletterSubscriber[]
+  discounts      Discount[]
+  giftCards      GiftCard[]
+  storeCredits   StoreCreditLedger[]
+  loyaltyRules   LoyaltyRule[]
+  loyaltyAccounts LoyaltyAccount[]
+  affiliates     Affiliate[]
+  subscribers    NewsletterSubscriber[]
 
   blogPosts     BlogPost[]
   returnRequests ReturnRequest[]
@@ -143,9 +189,11 @@ model Customer {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  loyalty LoyaltyAccount?
-  orders  Order[]
-  carts   Cart[]
+  loyalty        LoyaltyAccount?
+  orders         Order[]
+  carts          Cart[]
+  storeCredits   StoreCreditLedger[]
+  returnRequests ReturnRequest[]
 
   tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
@@ -364,10 +412,12 @@ model Order {
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
 
-  items         OrderItem[]
-  payments      Payment[]
+  items          OrderItem[]
+  payments       Payment[]
+  returnRequests ReturnRequest[]
 
-  tenant        Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  tenant   Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  customer Customer? @relation(fields: [customerId], references: [id], onDelete: SetNull)
 }
 
 model OrderItem {
@@ -474,9 +524,57 @@ model LoyaltyAccount {
   customer Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
 }
 
-model Affiliate { id String @id @default(cuid()); tenantId String; code String; isActive Boolean @default(true); createdAt DateTime @default(now()); tenant Tenant @relation(fields:[tenantId],references:[id],onDelete:Cascade); @@unique([tenantId,code]) }
-model NewsletterSubscriber { id String @id @default(cuid()); tenantId String; email String; status String @default("ACTIVE"); createdAt DateTime @default(now()); tenant Tenant @relation(fields:[tenantId],references:[id],onDelete:Cascade); @@unique([tenantId,email]) }
-model BlogPost { id String @id @default(cuid()); tenantId String; title String; slug String; content String; status String @default("DRAFT"); createdAt DateTime @default(now()); updatedAt DateTime @updatedAt; tenant Tenant @relation(fields:[tenantId],references:[id],onDelete:Cascade); @@unique([tenantId,slug]) }
+model Affiliate {
+  id        String   @id @default(cuid())
+  tenantId  String
+  code      String
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, code])
+}
+
+model NewsletterSubscriber {
+  id        String   @id @default(cuid())
+  tenantId  String
+  email     String
+  status    String   @default("ACTIVE")
+  createdAt DateTime @default(now())
+  tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, email])
+}
+
+model BlogPost {
+  id        String   @id @default(cuid())
+  tenantId  String
+  title     String
+  slug      String
+  content   String
+  status    String   @default("DRAFT")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, slug])
+}
+
+model ReturnRequest {
+  id          String       @id @default(cuid())
+  tenantId    String
+  orderId     String
+  customerId  String
+  reason      String?
+  status      ReturnStatus @default(REQUESTED)
+  refundAmount Int?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  order    Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  customer Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+}
 
 model ImportJob {
   id        String @id @default(cuid())
@@ -494,4 +592,13 @@ model ImportJob {
   tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 }
 
-model AppIntegration { id String @id @default(cuid()); tenantId String; name String; webhookUrl String; secret String; isActive Boolean @default(true); createdAt DateTime @default(now()); tenant Tenant @relation(fields:[tenantId],references:[id],onDelete:Cascade) }
+model AppIntegration {
+  id         String   @id @default(cuid())
+  tenantId   String
+  name       String
+  webhookUrl String
+  secret     String
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  tenant     Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+}
