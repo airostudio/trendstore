@@ -16,7 +16,9 @@ export async function POST(request: NextRequest) {
       select: { id: true, price: true },
     });
 
-    const variantPriceMap = new Map(variants.map((v) => [v.id, v.price]));
+    const variantPriceMap = new Map(
+      variants.map((v: { id: string; price: number }) => [v.id, v.price])
+    );
 
     const cart = await prisma.cart.create({
       data: {
