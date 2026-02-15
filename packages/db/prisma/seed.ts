@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import * as bcrypt from "bcryptjs";
 const prisma = new PrismaClient();
 
 function slugify(s: string) {
@@ -28,10 +29,17 @@ async function main() {
     }
   });
 
-  await prisma.user.upsert({
+  const hashedPassword = await bcrypt.hash("admin123", 10);
+  const adminUser = await prisma.user.upsert({
     where: { email: "admin@trendstore.local" },
     update: { name: "Trend Admin" },
-    create: { email: "admin@trendstore.local", name: "Trend Admin" }
+    create: { email: "admin@trendstore.local", name: "Trend Admin", password: hashedPassword }
+  });
+
+  await prisma.membership.upsert({
+    where: { tenantId_userId: { tenantId: tenant.id, userId: adminUser.id } },
+    update: {},
+    create: { tenantId: tenant.id, userId: adminUser.id, role: "OWNER" }
   });
 
   const zone = await prisma.shippingZone.create({ data: { tenantId: tenant.id, name: "United States", countries: ["US"], isActive: true } });

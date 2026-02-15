@@ -1,5 +1,12 @@
-generator client { provider = "prisma-client-js" }
-datasource db { provider = "postgresql"; url = env("DATABASE_URL") }
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
 
 enum TenancyMode { SAAS SELF_HOSTED }
 enum Role { OWNER ADMIN MANAGER SUPPORT MARKETING READONLY }
@@ -92,6 +99,7 @@ model TenantSettings {
 model User {
   id        String   @id @default(cuid())
   email     String   @unique
+  password  String
   name      String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
