@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
 import { getServerSession } from "next-auth/next";
+import { prisma } from "@/lib/prisma";
 import { authOptions } from "@/lib/auth";
-
-const prisma = new PrismaClient();
+import { logError } from "@/lib/logger";
 
 export async function GET(
   request: NextRequest,
@@ -36,6 +35,7 @@ export async function GET(
 
     return NextResponse.json({ product });
   } catch (error) {
+    logError("ProductGET", error);
     return NextResponse.json(
       { error: "Failed to fetch product" },
       { status: 500 }
@@ -75,6 +75,7 @@ export async function PATCH(
 
     return NextResponse.json({ product });
   } catch (error) {
+    logError("ProductPATCH", error);
     return NextResponse.json(
       { error: "Failed to update product" },
       { status: 500 }
@@ -98,6 +99,7 @@ export async function DELETE(
 
     return NextResponse.json({ success: true });
   } catch (error) {
+    logError("ProductDELETE", error);
     return NextResponse.json(
       { error: "Failed to delete product" },
       { status: 500 }

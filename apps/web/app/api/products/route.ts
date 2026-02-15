@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
 import { getServerSession } from "next-auth/next";
+import { z } from "zod";
+import { prisma } from "@/lib/prisma";
 import { authOptions } from "@/lib/auth";
-
-const prisma = new PrismaClient();
+import { productSchema } from "@/lib/validations";
+import { logError } from "@/lib/logger";
 
 export async function GET(request: NextRequest) {
   try {
@@ -33,6 +34,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ products });
   } catch (error) {
+    logError("ProductsGET", error);
     return NextResponse.json(
       { error: "Failed to fetch products" },
       { status: 500 }
@@ -48,7 +50,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { title, handle, description, tenantId, price, sku } = body;
+    const { title, handle, description, tenantId, price, sku } = productSchema.parse(body);
 
     const product = await prisma.product.create({
       data: {
@@ -84,6 +86,14 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ product }, { status: 201 });
   } catch (error) {
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        { error: "Invalid input", details: error.errors },
+        { status: 400 }
+      );
+    }
+
+    logError("ProductsPOST", error);
     return NextResponse.json(
       { error: "Failed to create product" },
       { status: 500 }

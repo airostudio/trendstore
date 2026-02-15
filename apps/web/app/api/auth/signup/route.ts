@@ -1,15 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
 import * as bcrypt from "bcryptjs";
 import { z } from "zod";
-
-const prisma = new PrismaClient();
-
-const signupSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(6),
-  name: z.string().optional(),
-});
+import { prisma } from "@/lib/prisma";
+import { signupSchema } from "@/lib/validations";
+import { logError } from "@/lib/logger";
 
 export async function POST(request: NextRequest) {
   try {
@@ -55,6 +49,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    logError("SignupRoute", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

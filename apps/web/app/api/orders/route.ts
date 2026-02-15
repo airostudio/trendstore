@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
 import { getServerSession } from "next-auth/next";
+import { z } from "zod";
+import { prisma } from "@/lib/prisma";
 import { authOptions } from "@/lib/auth";
-
-const prisma = new PrismaClient();
+import { createOrderSchema } from "@/lib/validations";
+import { logError } from "@/lib/logger";
 
 export async function GET(request: NextRequest) {
   try {
@@ -38,6 +39,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ orders });
   } catch (error) {
+    logError("OrdersGET", error);
     return NextResponse.json(
       { error: "Failed to fetch orders" },
       { status: 500 }
@@ -48,7 +50,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { tenantId, customerId, items, subtotal, total } = body;
+    const { tenantId, customerId, items, subtotal, total } = createOrderSchema.parse(body);
 
     const order = await prisma.order.create({
       data: {
@@ -59,7 +61,7 @@ export async function POST(request: NextRequest) {
         subtotal,
         total,
         items: {
-          create: items.map((item: any) => ({
+          create: items.map((item) => ({
             variantId: item.variantId,
             title: item.title,
             sku: item.sku,
@@ -84,6 +86,14 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ order }, { status: 201 });
   } catch (error) {
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        { error: "Invalid input", details: error.errors },
+        { status: 400 }
+      );
+    }
+
+    logError("OrdersPOST", error);
     return NextResponse.json(
       { error: "Failed to create order" },
       { status: 500 }
