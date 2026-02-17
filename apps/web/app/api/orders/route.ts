@@ -1,49 +1,39 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { z } from "zod";
-import { prisma } from "@/lib/prisma";
+import { supabase } from "@/lib/supabase";
 import { authOptions } from "@/lib/auth";
 import { createOrderSchema } from "@/lib/validations";
 import { logError } from "@/lib/logger";
 
+const TENANT_SLUG = "trend-store";
+
 export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
-    if (!session) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-    const searchParams = request.nextUrl.searchParams;
-    const tenantId = searchParams.get("tenantId") || "trend-store-demo";
+    const slug = request.nextUrl.searchParams.get("tenant") || TENANT_SLUG;
 
-    const orders = await prisma.order.findMany({
-      where: {
-        tenant: { slug: tenantId },
-      },
-      include: {
-        items: {
-          include: {
-            variant: {
-              include: {
-                product: true,
-              },
-            },
-          },
-        },
-        customer: true,
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
+    const { data: tenant } = await supabase
+      .from("tenants")
+      .select("id")
+      .eq("slug", slug)
+      .single();
 
-    return NextResponse.json({ orders });
+    if (!tenant) return NextResponse.json({ orders: [] });
+
+    const { data: orders, error } = await supabase
+      .from("orders")
+      .select(`*, customers (*), order_items (*, product_variants (*, products (*)))`)
+      .eq("tenant_id", tenant.id)
+      .order("created_at", { ascending: false });
+
+    if (error) throw error;
+    return NextResponse.json({ orders: orders ?? [] });
   } catch (error) {
     logError("OrdersGET", error);
-    return NextResponse.json(
-      { error: "Failed to fetch orders" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to fetch orders" }, { status: 500 });
   }
 }
 
@@ -52,51 +42,43 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { tenantId, customerId, items, subtotal, total } = createOrderSchema.parse(body);
 
-    const order = await prisma.order.create({
-      data: {
-        tenantId,
-        customerId,
+    const { data: order, error: oErr } = await supabase
+      .from("orders")
+      .insert({
+        tenant_id: tenantId,
+        customer_id: customerId ?? null,
         status: "PENDING_PAYMENT",
         currency: "USD",
         subtotal,
         total,
-        items: {
-          create: items.map((item) => ({
-            variantId: item.variantId,
-            title: item.title,
-            sku: item.sku,
-            quantity: item.quantity,
-            unitPrice: item.unitPrice,
-            lineTotal: item.quantity * item.unitPrice,
-          })),
-        },
-      },
-      include: {
-        items: {
-          include: {
-            variant: {
-              include: {
-                product: true,
-              },
-            },
-          },
-        },
-      },
-    });
+        tax_total: 0,
+        shipping_total: 0,
+        discount_total: 0,
+      })
+      .select()
+      .single();
+
+    if (oErr || !order) throw oErr;
+
+    const lineItems = items.map((item) => ({
+      order_id: order.id,
+      variant_id: item.variantId,
+      title: item.title,
+      sku: item.sku ?? null,
+      quantity: item.quantity,
+      unit_price: item.unitPrice,
+      line_total: item.quantity * item.unitPrice,
+    }));
+
+    const { error: iErr } = await supabase.from("order_items").insert(lineItems);
+    if (iErr) throw iErr;
 
     return NextResponse.json({ order }, { status: 201 });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return NextResponse.json(
-        { error: "Invalid input", details: error.errors },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Invalid input", details: error.errors }, { status: 400 });
     }
-
     logError("OrdersPOST", error);
-    return NextResponse.json(
-      { error: "Failed to create order" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to create order" }, { status: 500 });
   }
 }

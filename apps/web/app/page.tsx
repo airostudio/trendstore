@@ -3,19 +3,23 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
+interface Variant {
+  id: string;
+  price: number;
+  currency: string;
+  inventory_items: { stock_on_hand: number }[];
+}
+
 interface Product {
   id: string;
   title: string;
   handle: string;
-  description?: string;
-  variants: Array<{
-    id: string;
-    price: number;
-    currency: string;
-    inventory: {
-      stockOnHand: number;
-    };
-  }>;
+  description: string | null;
+  product_variants: Variant[];
+}
+
+function fmt(cents: number, currency: string) {
+  return new Intl.NumberFormat("en-US", { style: "currency", currency }).format(cents / 100);
 }
 
 export default function Home() {
@@ -23,143 +27,94 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchProducts();
+    fetch("/api/products")
+      .then((r) => r.json())
+      .then((d) => setProducts(d.products ?? []))
+      .catch(console.error)
+      .finally(() => setLoading(false));
   }, []);
 
-  const fetchProducts = async () => {
-    try {
-      const response = await fetch("/api/products");
-      const data = await response.json();
-      setProducts(data.products || []);
-    } catch (error) {
-      console.error("Failed to fetch products:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const formatPrice = (amount: number, currency: string) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: currency,
-    }).format(amount / 100);
-  };
+  const firstVariant = (p: Product) => p.product_variants?.[0];
+  const inStock = (p: Product) =>
+    (firstVariant(p)?.inventory_items?.[0]?.stock_on_hand ?? 0) > 0;
 
   return (
     <div className="min-h-screen bg-white">
-      <header className="bg-white shadow-sm">
-        <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            <div className="flex items-center">
-              <Link href="/" className="text-2xl font-bold text-indigo-600">
-                Trend Store
-              </Link>
-            </div>
-            <div className="flex items-center space-x-4">
-              <Link
-                href="/auth/signin"
-                className="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium"
-              >
-                Sign In
-              </Link>
-              <Link
-                href="/admin"
-                className="bg-indigo-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-indigo-700"
-              >
-                Admin
-              </Link>
-            </div>
+      <header className="sticky top-0 z-10 bg-white border-b border-gray-100 shadow-sm">
+        <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between h-16 items-center">
+          <Link href="/" className="text-2xl font-bold tracking-tight text-indigo-600">
+            Trend Store
+          </Link>
+          <div className="flex items-center gap-4">
+            <Link href="/auth/signin" className="text-sm font-medium text-gray-600 hover:text-indigo-600 transition-colors">
+              Sign in
+            </Link>
+            <Link href="/admin" className="text-sm font-medium bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors">
+              Admin
+            </Link>
           </div>
         </nav>
       </header>
 
-      <main>
-        <div className="bg-indigo-700">
-          <div className="max-w-7xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:px-8">
-            <div className="text-center">
-              <h1 className="text-4xl font-extrabold text-white sm:text-5xl sm:tracking-tight lg:text-6xl">
-                Welcome to Trend Store
-              </h1>
-              <p className="mt-4 max-w-xl mx-auto text-xl text-indigo-200">
-                Modern commerce powered by the latest technology
-              </p>
-            </div>
-          </div>
-        </div>
+      <section className="bg-gradient-to-br from-indigo-700 to-indigo-900 text-white py-24 px-4 text-center">
+        <p className="text-indigo-300 text-sm font-semibold uppercase tracking-widest mb-3">New collection</p>
+        <h1 className="text-5xl sm:text-6xl font-extrabold tracking-tight mb-4">Welcome to Trend Store</h1>
+        <p className="text-lg text-indigo-200 max-w-xl mx-auto">
+          Curated essentials. Clean design. Powered by Supabase.
+        </p>
+      </section>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="flex justify-between items-center mb-8">
-            <h2 className="text-3xl font-extrabold text-gray-900">
-              Featured Products
-            </h2>
-          </div>
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <h2 className="text-3xl font-bold text-gray-900 mb-10">Featured Products</h2>
 
-          {loading ? (
-            <div className="text-center py-12">
-              <div className="text-gray-600">Loading products...</div>
-            </div>
-          ) : products.length === 0 ? (
-            <div className="text-center py-12">
-              <div className="text-gray-600">No products available yet.</div>
-              <Link
-                href="/admin"
-                className="mt-4 inline-block text-indigo-600 hover:text-indigo-500"
-              >
-                Add your first product in the admin panel
-              </Link>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
-              {products.map((product) => (
-                <div
-                  key={product.id}
-                  className="group border border-gray-200 rounded-lg p-4 hover:shadow-lg transition-shadow"
-                >
-                  <div className="aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-lg bg-gray-200">
-                    <div className="h-48 flex items-center justify-center text-gray-400">
-                      No image
-                    </div>
+        {loading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="rounded-2xl bg-gray-100 animate-pulse h-80" />
+            ))}
+          </div>
+        ) : products.length === 0 ? (
+          <div className="text-center py-20 text-gray-500">
+            <p className="text-lg">No products yet.</p>
+            <Link href="/admin" className="mt-3 inline-block text-indigo-600 hover:underline text-sm">
+              Add your first product →
+            </Link>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {products.map((product) => {
+              const v = firstVariant(product);
+              return (
+                <div key={product.id} className="group flex flex-col rounded-2xl border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow">
+                  <div className="h-52 bg-gray-100 flex items-center justify-center text-gray-400 text-sm">
+                    No image
                   </div>
-                  <h3 className="mt-4 text-sm font-medium text-gray-900">
-                    {product.title}
-                  </h3>
-                  {product.description && (
-                    <p className="mt-1 text-sm text-gray-500 line-clamp-2">
-                      {product.description}
-                    </p>
-                  )}
-                  <div className="mt-2 flex items-center justify-between">
-                    <p className="text-lg font-medium text-gray-900">
-                      {product.variants[0] &&
-                        formatPrice(
-                          product.variants[0].price,
-                          product.variants[0].currency
-                        )}
-                    </p>
-                    {product.variants[0]?.inventory && (
-                      <p className="text-sm text-gray-500">
-                        {product.variants[0].inventory.stockOnHand > 0
-                          ? "In stock"
-                          : "Out of stock"}
-                      </p>
+                  <div className="flex flex-col flex-1 p-4 gap-2">
+                    <h3 className="font-semibold text-gray-900 text-sm leading-tight">{product.title}</h3>
+                    {product.description && (
+                      <p className="text-xs text-gray-500 line-clamp-2">{product.description}</p>
                     )}
+                    <div className="mt-auto flex items-center justify-between pt-3">
+                      <span className="text-base font-bold text-gray-900">
+                        {v ? fmt(v.price, v.currency) : "—"}
+                      </span>
+                      <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${inStock(product) ? "bg-green-100 text-green-700" : "bg-red-100 text-red-600"}`}>
+                        {inStock(product) ? "In stock" : "Sold out"}
+                      </span>
+                    </div>
+                    <button className="w-full mt-2 bg-indigo-600 text-white text-sm font-medium py-2 rounded-lg hover:bg-indigo-700 transition-colors">
+                      Add to cart
+                    </button>
                   </div>
-                  <button className="mt-4 w-full bg-indigo-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-indigo-700 transition-colors">
-                    Add to Cart
-                  </button>
                 </div>
-              ))}
-            </div>
-          )}
-        </div>
+              );
+            })}
+          </div>
+        )}
       </main>
 
-      <footer className="bg-gray-50 mt-24">
-        <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-base text-gray-400">
-            &copy; 2024 Trend Store. All rights reserved.
-          </p>
-        </div>
+      <footer className="border-t border-gray-100 py-10 text-center text-sm text-gray-400">
+        &copy; {new Date().getFullYear()} Trend Store. Powered by Supabase.
       </footer>
     </div>
   );
