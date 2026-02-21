@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orders - TrendStore Admin</title>
+    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="admin-page">
+    <!-- Sidebar -->
+    <aside class="admin-sidebar">
+        <div class="admin-logo">
+            <span class="logo-icon">🔥</span>
+            <span class="logo-text">TrendStore</span>
+        </div>
+
+        <nav class="admin-nav">
+            <a href="/admin/index.html" class="admin-nav-link">
+                <span class="nav-icon">📊</span>
+                <span>Dashboard</span>
+            </a>
+            <a href="/admin/products.html" class="admin-nav-link">
+                <span class="nav-icon">📦</span>
+                <span>Products</span>
+            </a>
+            <a href="/admin/orders.html" class="admin-nav-link active">
+                <span class="nav-icon">🛒</span>
+                <span>Orders</span>
+            </a>
+            <a href="/admin/settings.html" class="admin-nav-link">
+                <span class="nav-icon">⚙️</span>
+                <span>Settings</span>
+            </a>
+        </nav>
+
+        <div class="admin-user">
+            <div class="admin-user-info">
+                <p class="admin-user-name" id="admin-name">Admin</p>
+                <p class="admin-user-email" id="admin-email"></p>
+            </div>
+            <button class="btn-logout" id="logout-btn">Logout</button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+        <header class="admin-header">
+            <h1 class="admin-title">Orders</h1>
+        </header>
+
+        <div class="admin-content">
+            <div class="empty-state">
+                <div class="empty-icon">📦</div>
+                <h2>No Orders Yet</h2>
+                <p>Orders will appear here once customers start purchasing products.</p>
+                <p class="info-text">
+                    <strong>Note:</strong> This is a demo application. In production, orders would be stored in a database or backend service.
+                    Currently, order data is only stored in the browser's localStorage for the confirmation page.
+                </p>
+                <a href="/" class="btn btn-primary">View Store</a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="/js/admin-auth.js"></script>
+    <script>
+        // Logout handler
+        document.getElementById('logout-btn').addEventListener('click', function() {
+            sessionStorage.clear();
+            window.location.href = '/admin/login.html';
+        });
+    </script>
+</body>
+</html>

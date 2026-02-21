@@ -1,0 +1,66 @@
+{
+  "siteName": "TrendStore",
+  "tagline": "Viral Products Before They Sell Out",
+  "description": "Discover the hottest trending products from TikTok, Instagram, and social media. Shop viral items before they're gone!",
+  "timezone": "America/New_York",
+  "currency": "USD",
+  "contactEmail": "hello@trendstore.com",
+  "supportEmail": "support@trendstore.com",
+  "colors": {
+    "primary": "#FF6B6B",
+    "secondary": "#4ECDC4",
+    "accent": "#FFE66D",
+    "dark": "#1A1A2E",
+    "light": "#F7F7F7"
+  },
+  "fees": {
+    "shipping": 5.99,
+    "freeShippingThreshold": 50.00,
+    "tax": 0.08,
+    "processingFee": 0.00
+  },
+  "shipping": {
+    "standard": {
+      "name": "Standard Shipping",
+      "cost": 5.99,
+      "estimatedDays": "5-7 business days"
+    },
+    "express": {
+      "name": "Express Shipping",
+      "cost": 14.99,
+      "estimatedDays": "2-3 business days"
+    },
+    "overnight": {
+      "name": "Overnight Shipping",
+      "cost": 29.99,
+      "estimatedDays": "1 business day"
+    }
+  },
+  "paymentMethods": ["Credit Card", "PayPal", "Apple Pay", "Google Pay"],
+  "social": {
+    "tiktok": "@trendstore",
+    "instagram": "@trendstore",
+    "twitter": "@trendstore",
+    "facebook": "trendstore"
+  },
+  "features": {
+    "viralProducts": true,
+    "trendingSection": true,
+    "userReviews": true,
+    "wishlist": true,
+    "guestCheckout": true,
+    "socialSharing": true
+  },
+  "adminCredentials": [
+    {
+      "email": "admin@trendstore.com",
+      "password": "TrendAdmin2026!",
+      "role": "owner"
+    },
+    {
+      "email": "manager@trendstore.com",
+      "password": "Manager2026!",
+      "role": "admin"
+    }
+  ]
+}

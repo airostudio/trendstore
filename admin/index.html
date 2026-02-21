@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - TrendStore Admin</title>
+    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="admin-page">
+    <!-- Sidebar -->
+    <aside class="admin-sidebar">
+        <div class="admin-logo">
+            <span class="logo-icon">🔥</span>
+            <span class="logo-text">TrendStore</span>
+        </div>
+
+        <nav class="admin-nav">
+            <a href="/admin/index.html" class="admin-nav-link active">
+                <span class="nav-icon">📊</span>
+                <span>Dashboard</span>
+            </a>
+            <a href="/admin/products.html" class="admin-nav-link">
+                <span class="nav-icon">📦</span>
+                <span>Products</span>
+            </a>
+            <a href="/admin/orders.html" class="admin-nav-link">
+                <span class="nav-icon">🛒</span>
+                <span>Orders</span>
+            </a>
+            <a href="/admin/settings.html" class="admin-nav-link">
+                <span class="nav-icon">⚙️</span>
+                <span>Settings</span>
+            </a>
+        </nav>
+
+        <div class="admin-user">
+            <div class="admin-user-info">
+                <p class="admin-user-name" id="admin-name">Admin</p>
+                <p class="admin-user-email" id="admin-email"></p>
+            </div>
+            <button class="btn-logout" id="logout-btn">Logout</button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+        <header class="admin-header">
+            <h1 class="admin-title">Dashboard</h1>
+            <div class="admin-actions">
+                <a href="/" class="btn btn-secondary" target="_blank">View Store</a>
+            </div>
+        </header>
+
+        <div class="admin-content">
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">📦</div>
+                    <div class="stat-info">
+                        <p class="stat-label">Total Products</p>
+                        <p class="stat-value" id="stat-products">0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🛒</div>
+                    <div class="stat-info">
+                        <p class="stat-label">Total Orders</p>
+                        <p class="stat-value" id="stat-orders">0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">💰</div>
+                    <div class="stat-info">
+                        <p class="stat-label">Revenue</p>
+                        <p class="stat-value" id="stat-revenue">$0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⭐</div>
+                    <div class="stat-info">
+                        <p class="stat-label">Avg Rating</p>
+                        <p class="stat-value" id="stat-rating">0.0</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Products -->
+            <div class="admin-section">
+                <div class="section-header">
+                    <h2 class="section-title">Recent Products</h2>
+                    <a href="/admin/products.html" class="section-link">View All →</a>
+                </div>
+                <div class="table-container">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Category</th>
+                                <th>Price</th>
+                                <th>Stock</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recent-products">
+                            <tr>
+                                <td colspan="5" class="text-center">Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Top Performing -->
+            <div class="admin-section">
+                <div class="section-header">
+                    <h2 class="section-title">Top Performing Products</h2>
+                </div>
+                <div class="table-container">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Views</th>
+                                <th>Sales</th>
+                                <th>Rating</th>
+                            </tr>
+                        </thead>
+                        <tbody id="top-products">
+                            <tr>
+                                <td colspan="4" class="text-center">Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="/js/admin-auth.js"></script>
+    <script>
+        // Load dashboard data
+        window.addEventListener('DOMContentLoaded', async function() {
+            try {
+                // Load products
+                const response = await fetch('/data/products.json');
+                const products = await response.json();
+
+                // Update stats
+                document.getElementById('stat-products').textContent = products.length;
+
+                // Calculate total sales and revenue
+                const totalSales = products.reduce((sum, p) => sum + (p.sales || 0), 0);
+                const totalRevenue = products.reduce((sum, p) => sum + ((p.sales || 0) * p.price), 0);
+                const avgRating = products.reduce((sum, p) => sum + (p.rating || 0), 0) / products.length;
+
+                document.getElementById('stat-orders').textContent = totalSales.toLocaleString();
+                document.getElementById('stat-revenue').textContent = '$' + totalRevenue.toLocaleString();
+                document.getElementById('stat-rating').textContent = avgRating.toFixed(1);
+
+                // Display recent products (first 5)
+                const recentHTML = products.slice(0, 5).map(p => `
+                    <tr>
+                        <td>
+                            <div class="product-cell">
+                                <strong>${p.name}</strong>
+                            </div>
+                        </td>
+                        <td>${p.category}</td>
+                        <td>$${p.price.toFixed(2)}</td>
+                        <td><span class="badge ${p.stock > 50 ? 'badge-success' : 'badge-warning'}">${p.stock}</span></td>
+                        <td><span class="badge ${p.trending ? 'badge-success' : 'badge-default'}">${p.trending ? 'Trending' : 'Active'}</span></td>
+                    </tr>
+                `).join('');
+                document.getElementById('recent-products').innerHTML = recentHTML;
+
+                // Display top performing (sorted by sales)
+                const topPerforming = [...products].sort((a, b) => b.sales - a.sales).slice(0, 5);
+                const topHTML = topPerforming.map(p => `
+                    <tr>
+                        <td><strong>${p.name}</strong></td>
+                        <td>${p.views.toLocaleString()}</td>
+                        <td>${p.sales.toLocaleString()}</td>
+                        <td>${p.rating.toFixed(1)} ⭐</td>
+                    </tr>
+                `).join('');
+                document.getElementById('top-products').innerHTML = topHTML;
+
+            } catch (error) {
+                console.error('Error loading dashboard data:', error);
+            }
+        });
+
+        // Logout handler
+        document.getElementById('logout-btn').addEventListener('click', function() {
+            sessionStorage.clear();
+            window.location.href = '/admin/login.html';
+        });
+    </script>
+</body>
+</html>

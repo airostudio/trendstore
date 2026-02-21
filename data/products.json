@@ -1,0 +1,209 @@
+[
+  {
+    "id": "viral-product-1",
+    "name": "Viral TikTok LED Cloud Lamp",
+    "description": "The trending LED cloud lamp that everyone is talking about! Creates a stunning sunset ambiance in any room. Perfect for creating aesthetic content.",
+    "price": 39.99,
+    "originalPrice": 79.99,
+    "category": "home-decor",
+    "trending": true,
+    "viral": true,
+    "views": 2500000,
+    "sales": 15420,
+    "images": [
+      "/images/products/cloud-lamp-1.jpg",
+      "/images/products/cloud-lamp-2.jpg"
+    ],
+    "tags": ["tiktok-viral", "home-decor", "lighting", "aesthetic"],
+    "rating": 4.8,
+    "reviewCount": 1240,
+    "stock": 150,
+    "variants": [
+      {
+        "id": "cloud-lamp-sunset",
+        "name": "Sunset Orange",
+        "price": 39.99,
+        "stock": 50
+      },
+      {
+        "id": "cloud-lamp-rainbow",
+        "name": "Rainbow",
+        "price": 44.99,
+        "stock": 100
+      }
+    ]
+  },
+  {
+    "id": "viral-product-2",
+    "name": "Trending Mini Waffle Maker",
+    "description": "Make perfect mini waffles in minutes! This viral kitchen gadget has taken social media by storm. Create adorable breakfast content that your followers will love.",
+    "price": 24.99,
+    "originalPrice": 49.99,
+    "category": "kitchen",
+    "trending": true,
+    "viral": true,
+    "views": 3200000,
+    "sales": 22100,
+    "images": [
+      "/images/products/waffle-maker-1.jpg",
+      "/images/products/waffle-maker-2.jpg"
+    ],
+    "tags": ["tiktok-viral", "kitchen", "cooking", "breakfast"],
+    "rating": 4.9,
+    "reviewCount": 2840,
+    "stock": 200,
+    "variants": []
+  },
+  {
+    "id": "viral-product-3",
+    "name": "Aesthetic Phone Ring Light",
+    "description": "Level up your selfie game with this clip-on ring light. Perfect for content creators, makeup lovers, and anyone who wants to look flawless on camera.",
+    "price": 19.99,
+    "originalPrice": 34.99,
+    "category": "tech",
+    "trending": true,
+    "viral": false,
+    "views": 1800000,
+    "sales": 9500,
+    "images": [
+      "/images/products/ring-light-1.jpg",
+      "/images/products/ring-light-2.jpg"
+    ],
+    "tags": ["content-creator", "tech", "photography", "selfie"],
+    "rating": 4.7,
+    "reviewCount": 890,
+    "stock": 300,
+    "variants": [
+      {
+        "id": "ring-light-white",
+        "name": "White",
+        "price": 19.99,
+        "stock": 150
+      },
+      {
+        "id": "ring-light-pink",
+        "name": "Pink",
+        "price": 19.99,
+        "stock": 150
+      }
+    ]
+  },
+  {
+    "id": "viral-product-4",
+    "name": "Viral Portable Blender",
+    "description": "Make smoothies anywhere! This USB rechargeable blender is perfect for the gym, office, or travel. Blend your way to a healthier lifestyle.",
+    "price": 29.99,
+    "originalPrice": 59.99,
+    "category": "kitchen",
+    "trending": true,
+    "viral": true,
+    "views": 4100000,
+    "sales": 31200,
+    "images": [
+      "/images/products/blender-1.jpg",
+      "/images/products/blender-2.jpg"
+    ],
+    "tags": ["tiktok-viral", "kitchen", "fitness", "healthy-living"],
+    "rating": 4.6,
+    "reviewCount": 3120,
+    "stock": 180,
+    "variants": []
+  },
+  {
+    "id": "viral-product-5",
+    "name": "Trending Ice Roller for Face",
+    "description": "The skincare tool everyone is raving about! Reduces puffiness, soothes skin, and gives you that perfect glow. Your morning routine upgrade.",
+    "price": 14.99,
+    "originalPrice": 29.99,
+    "category": "beauty",
+    "trending": true,
+    "viral": true,
+    "views": 5200000,
+    "sales": 42800,
+    "images": [
+      "/images/products/ice-roller-1.jpg",
+      "/images/products/ice-roller-2.jpg"
+    ],
+    "tags": ["tiktok-viral", "beauty", "skincare", "wellness"],
+    "rating": 4.9,
+    "reviewCount": 4280,
+    "stock": 250,
+    "variants": []
+  },
+  {
+    "id": "viral-product-6",
+    "name": "Aesthetic Desk Organizer Set",
+    "description": "Transform your workspace with this trendy organizer set. Perfect for students and remote workers who want an Instagram-worthy desk setup.",
+    "price": 34.99,
+    "originalPrice": 59.99,
+    "category": "office",
+    "trending": true,
+    "viral": false,
+    "views": 1200000,
+    "sales": 6700,
+    "images": [
+      "/images/products/organizer-1.jpg",
+      "/images/products/organizer-2.jpg"
+    ],
+    "tags": ["aesthetic", "office", "organization", "desk-setup"],
+    "rating": 4.8,
+    "reviewCount": 670,
+    "stock": 120,
+    "variants": [
+      {
+        "id": "organizer-pink",
+        "name": "Blush Pink",
+        "price": 34.99,
+        "stock": 60
+      },
+      {
+        "id": "organizer-white",
+        "name": "Marble White",
+        "price": 34.99,
+        "stock": 60
+      }
+    ]
+  },
+  {
+    "id": "viral-product-7",
+    "name": "Trending Water Bottle with Time Marker",
+    "description": "Stay hydrated with this motivational water bottle! Features time markers to track your daily water intake. A must-have for your wellness journey.",
+    "price": 16.99,
+    "originalPrice": 32.99,
+    "category": "fitness",
+    "trending": true,
+    "viral": true,
+    "views": 3800000,
+    "sales": 28900,
+    "images": [
+      "/images/products/water-bottle-1.jpg",
+      "/images/products/water-bottle-2.jpg"
+    ],
+    "tags": ["tiktok-viral", "fitness", "wellness", "hydration"],
+    "rating": 4.7,
+    "reviewCount": 2890,
+    "stock": 400,
+    "variants": []
+  },
+  {
+    "id": "viral-product-8",
+    "name": "Viral Acrylic Nail Kit",
+    "description": "Do salon-quality nails at home! This complete kit has everything you need to create stunning acrylic nails. Save money and get creative.",
+    "price": 44.99,
+    "originalPrice": 89.99,
+    "category": "beauty",
+    "trending": true,
+    "viral": true,
+    "views": 6500000,
+    "sales": 18400,
+    "images": [
+      "/images/products/nail-kit-1.jpg",
+      "/images/products/nail-kit-2.jpg"
+    ],
+    "tags": ["tiktok-viral", "beauty", "nails", "diy"],
+    "rating": 4.5,
+    "reviewCount": 1840,
+    "stock": 90,
+    "variants": []
+  }
+]

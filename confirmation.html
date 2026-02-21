@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmation - TrendStore</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <a href="/" class="logo">
+                    <span class="logo-icon">🔥</span>
+                    <span class="logo-text">TrendStore</span>
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Confirmation Section -->
+    <section class="section">
+        <div class="container">
+            <div class="confirmation-container">
+                <div class="confirmation-icon">✓</div>
+                <h1 class="confirmation-title">Order Confirmed!</h1>
+                <p class="confirmation-subtitle">Thank you for your purchase.</p>
+
+                <div class="confirmation-card">
+                    <div class="confirmation-header">
+                        <div>
+                            <p class="confirmation-label">Order Number</p>
+                            <p class="confirmation-value" id="order-number">-</p>
+                        </div>
+                        <div>
+                            <p class="confirmation-label">Order Date</p>
+                            <p class="confirmation-value" id="order-date">-</p>
+                        </div>
+                    </div>
+
+                    <div class="confirmation-divider"></div>
+
+                    <div class="confirmation-section">
+                        <h3 class="confirmation-section-title">Shipping Address</h3>
+                        <div id="shipping-info" class="confirmation-info">
+                            <!-- Loaded dynamically -->
+                        </div>
+                    </div>
+
+                    <div class="confirmation-divider"></div>
+
+                    <div class="confirmation-section">
+                        <h3 class="confirmation-section-title">Order Items</h3>
+                        <div id="order-items" class="confirmation-items">
+                            <!-- Loaded dynamically -->
+                        </div>
+                    </div>
+
+                    <div class="confirmation-divider"></div>
+
+                    <div class="confirmation-section">
+                        <div class="confirmation-summary">
+                            <div class="confirmation-summary-row">
+                                <span>Subtotal</span>
+                                <span id="order-subtotal">$0.00</span>
+                            </div>
+                            <div class="confirmation-summary-row">
+                                <span>Shipping</span>
+                                <span id="order-shipping">$0.00</span>
+                            </div>
+                            <div class="confirmation-summary-row">
+                                <span>Tax</span>
+                                <span id="order-tax">$0.00</span>
+                            </div>
+                            <div class="confirmation-summary-row confirmation-summary-total">
+                                <strong>Total</strong>
+                                <strong id="order-total">$0.00</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="confirmation-actions">
+                    <a href="/products.html" class="btn btn-primary">Continue Shopping</a>
+                    <button class="btn btn-secondary" onclick="window.print()">Print Receipt</button>
+                </div>
+
+                <div class="confirmation-info-box">
+                    <p><strong>What's next?</strong></p>
+                    <p>You'll receive a confirmation email at <span id="customer-email"></span> with your order details and tracking information.</p>
+                    <p>Expected delivery: <strong id="delivery-estimate"></strong></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2026 TrendStore. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="/js/app.js"></script>
+    <script>
+        // Load order details from localStorage
+        window.addEventListener('DOMContentLoaded', function() {
+            const orderData = JSON.parse(localStorage.getItem('lastOrder') || '{}');
+
+            if (!orderData.orderId) {
+                document.querySelector('.confirmation-container').innerHTML = `
+                    <div class="empty-state">
+                        <h2>No order found</h2>
+                        <p>It looks like you haven't placed an order yet.</p>
+                        <a href="/products.html" class="btn btn-primary">Start Shopping</a>
+                    </div>
+                `;
+                return;
+            }
+
+            // Display order number and date
+            document.getElementById('order-number').textContent = orderData.orderId;
+            document.getElementById('order-date').textContent = new Date(orderData.date).toLocaleDateString();
+
+            // Display shipping info
+            const shipping = orderData.shipping;
+            document.getElementById('shipping-info').innerHTML = `
+                <p><strong>${orderData.customer.firstName} ${orderData.customer.lastName}</strong></p>
+                <p>${shipping.address}</p>
+                ${shipping.apartment ? `<p>${shipping.apartment}</p>` : ''}
+                <p>${shipping.city}, ${shipping.state} ${shipping.zipCode}</p>
+                <p>${orderData.customer.phone}</p>
+            `;
+
+            // Display order items
+            let itemsHTML = '';
+            orderData.items.forEach(item => {
+                itemsHTML += `
+                    <div class="confirmation-item">
+                        <div>
+                            <p class="confirmation-item-name">${item.name}</p>
+                            <p class="confirmation-item-qty">Quantity: ${item.quantity}</p>
+                        </div>
+                        <p class="confirmation-item-price">$${(item.price * item.quantity).toFixed(2)}</p>
+                    </div>
+                `;
+            });
+            document.getElementById('order-items').innerHTML = itemsHTML;
+
+            // Calculate totals
+            const subtotal = orderData.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const shippingCosts = {
+                'standard': 5.99,
+                'express': 14.99,
+                'overnight': 29.99
+            };
+            const shippingCost = shippingCosts[shipping.method] || 5.99;
+            const tax = (subtotal + shippingCost) * 0.08;
+            const total = subtotal + shippingCost + tax;
+
+            document.getElementById('order-subtotal').textContent = '$' + subtotal.toFixed(2);
+            document.getElementById('order-shipping').textContent = '$' + shippingCost.toFixed(2);
+            document.getElementById('order-tax').textContent = '$' + tax.toFixed(2);
+            document.getElementById('order-total').textContent = '$' + total.toFixed(2);
+
+            // Display customer email
+            document.getElementById('customer-email').textContent = orderData.customer.email;
+
+            // Calculate delivery estimate
+            const deliveryDays = {
+                'standard': '5-7 business days',
+                'express': '2-3 business days',
+                'overnight': '1 business day'
+            };
+            document.getElementById('delivery-estimate').textContent = deliveryDays[shipping.method] || '5-7 business days';
+        });
+    </script>
+</body>
+</html>

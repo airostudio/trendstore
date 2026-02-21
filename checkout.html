@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - TrendStore</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <a href="/" class="logo">
+                    <span class="logo-icon">🔥</span>
+                    <span class="logo-text">TrendStore</span>
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Checkout Section -->
+    <section class="section">
+        <div class="container">
+            <h1 class="page-title">Checkout</h1>
+
+            <div class="checkout-layout">
+                <!-- Checkout Form -->
+                <div class="checkout-form">
+                    <form id="checkout-form">
+                        <!-- Contact Information -->
+                        <div class="form-section">
+                            <h2 class="form-section-title">Contact Information</h2>
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" id="email" name="email" required>
+                            </div>
+                        </div>
+
+                        <!-- Shipping Address -->
+                        <div class="form-section">
+                            <h2 class="form-section-title">Shipping Address</h2>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="firstName">First Name</label>
+                                    <input type="text" id="firstName" name="firstName" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="lastName">Last Name</label>
+                                    <input type="text" id="lastName" name="lastName" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="address">Address</label>
+                                <input type="text" id="address" name="address" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="apartment">Apartment, suite, etc. (optional)</label>
+                                <input type="text" id="apartment" name="apartment">
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="city">City</label>
+                                    <input type="text" id="city" name="city" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="state">State</label>
+                                    <input type="text" id="state" name="state" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="zipCode">ZIP Code</label>
+                                    <input type="text" id="zipCode" name="zipCode" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="phone">Phone</label>
+                                <input type="tel" id="phone" name="phone" required>
+                            </div>
+                        </div>
+
+                        <!-- Shipping Method -->
+                        <div class="form-section">
+                            <h2 class="form-section-title">Shipping Method</h2>
+                            <div class="shipping-options">
+                                <label class="shipping-option">
+                                    <input type="radio" name="shipping" value="standard" checked>
+                                    <div class="shipping-option-content">
+                                        <div>
+                                            <strong>Standard Shipping</strong>
+                                            <p>5-7 business days</p>
+                                        </div>
+                                        <span class="shipping-price">$5.99</span>
+                                    </div>
+                                </label>
+                                <label class="shipping-option">
+                                    <input type="radio" name="shipping" value="express">
+                                    <div class="shipping-option-content">
+                                        <div>
+                                            <strong>Express Shipping</strong>
+                                            <p>2-3 business days</p>
+                                        </div>
+                                        <span class="shipping-price">$14.99</span>
+                                    </div>
+                                </label>
+                                <label class="shipping-option">
+                                    <input type="radio" name="shipping" value="overnight">
+                                    <div class="shipping-option-content">
+                                        <div>
+                                            <strong>Overnight Shipping</strong>
+                                            <p>1 business day</p>
+                                        </div>
+                                        <span class="shipping-price">$29.99</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Payment Information -->
+                        <div class="form-section">
+                            <h2 class="form-section-title">Payment Information</h2>
+                            <div class="form-group">
+                                <label for="cardNumber">Card Number</label>
+                                <input type="text" id="cardNumber" name="cardNumber" placeholder="1234 5678 9012 3456" required>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="expiry">Expiration Date</label>
+                                    <input type="text" id="expiry" name="expiry" placeholder="MM/YY" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="cvv">CVV</label>
+                                    <input type="text" id="cvv" name="cvv" placeholder="123" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-block btn-lg">
+                            Complete Order
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Order Summary -->
+                <aside class="order-summary">
+                    <h2 class="order-summary-title">Order Summary</h2>
+
+                    <div id="order-items" class="order-items">
+                        <!-- Order items loaded dynamically -->
+                    </div>
+
+                    <div class="order-summary-divider"></div>
+
+                    <div class="order-summary-row">
+                        <span>Subtotal</span>
+                        <span id="checkout-subtotal">$0.00</span>
+                    </div>
+                    <div class="order-summary-row">
+                        <span>Shipping</span>
+                        <span id="checkout-shipping">$5.99</span>
+                    </div>
+                    <div class="order-summary-row">
+                        <span>Tax (8%)</span>
+                        <span id="checkout-tax">$0.00</span>
+                    </div>
+                    <div class="order-summary-divider"></div>
+                    <div class="order-summary-row order-summary-total">
+                        <span>Total</span>
+                        <span id="checkout-total">$0.00</span>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2026 TrendStore. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="/js/app.js"></script>
+    <script src="/js/cart.js"></script>
+    <script>
+        // Handle form submission
+        document.getElementById('checkout-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Get form data
+            const formData = new FormData(e.target);
+            const orderData = {
+                customer: {
+                    email: formData.get('email'),
+                    firstName: formData.get('firstName'),
+                    lastName: formData.get('lastName'),
+                    phone: formData.get('phone')
+                },
+                shipping: {
+                    address: formData.get('address'),
+                    apartment: formData.get('apartment'),
+                    city: formData.get('city'),
+                    state: formData.get('state'),
+                    zipCode: formData.get('zipCode'),
+                    method: formData.get('shipping')
+                },
+                items: Cart.getItems(),
+                total: Cart.getTotal()
+            };
+
+            // Generate order ID
+            const orderId = 'ORD-' + Date.now();
+
+            // Save order to localStorage (in production, send to server)
+            localStorage.setItem('lastOrder', JSON.stringify({
+                ...orderData,
+                orderId,
+                date: new Date().toISOString()
+            }));
+
+            // Clear cart
+            Cart.clear();
+
+            // Redirect to confirmation
+            window.location.href = '/confirmation.html?order=' + orderId;
+        });
+
+        // Update shipping cost when method changes
+        document.querySelectorAll('input[name="shipping"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const shippingCosts = {
+                    'standard': 5.99,
+                    'express': 14.99,
+                    'overnight': 29.99
+                };
+                const cart = Cart.getItems();
+                const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                const shipping = shippingCosts[this.value];
+                const tax = (subtotal + shipping) * 0.08;
+                const total = subtotal + shipping + tax;
+
+                document.getElementById('checkout-shipping').textContent = '$' + shipping.toFixed(2);
+                document.getElementById('checkout-tax').textContent = '$' + tax.toFixed(2);
+                document.getElementById('checkout-total').textContent = '$' + total.toFixed(2);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop All Products - TrendStore</title>
+    <meta name="description" content="Browse all viral and trending products from TikTok, Instagram, and social media.">
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <a href="/" class="logo">
+                    <span class="logo-icon">🔥</span>
+                    <span class="logo-text">TrendStore</span>
+                </a>
+                <ul class="nav-menu">
+                    <li><a href="/" class="nav-link">Home</a></li>
+                    <li><a href="/products.html" class="nav-link active">Shop All</a></li>
+                    <li><a href="/products.html?trending=true" class="nav-link">Trending</a></li>
+                    <li><a href="/products.html?viral=true" class="nav-link">Viral</a></li>
+                </ul>
+                <div class="nav-actions">
+                    <button class="icon-btn" id="search-btn" aria-label="Search">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <path d="M9 17A8 8 0 1 0 9 1a8 8 0 0 0 0 16ZM18 18l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </button>
+                    <a href="/cart.html" class="icon-btn cart-btn" aria-label="Cart">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <path d="M1 1h2l.68 3.5M5 13h10l3-8H4.5L5 13ZM5 13L3.5 5.5M5 13l-1.5 3.5h13M8 18a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0ZM16 18a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <span class="cart-count" id="cart-count">0</span>
+                    </a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Products Section -->
+    <section class="section">
+        <div class="container">
+            <div class="products-header">
+                <div>
+                    <h1 class="page-title" id="page-title">All Products</h1>
+                    <p class="page-subtitle" id="products-count">Loading products...</p>
+                </div>
+                <div class="filter-controls">
+                    <select id="sort-select" class="filter-select">
+                        <option value="popular">Most Popular</option>
+                        <option value="price-low">Price: Low to High</option>
+                        <option value="price-high">Price: High to Low</option>
+                        <option value="rating">Highest Rated</option>
+                        <option value="views">Most Viewed</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="products-layout">
+                <!-- Sidebar Filters -->
+                <aside class="filters-sidebar">
+                    <div class="filter-section">
+                        <h3 class="filter-title">Categories</h3>
+                        <div class="filter-options">
+                            <label class="filter-option">
+                                <input type="checkbox" name="category" value="home-decor">
+                                <span>Home Decor</span>
+                            </label>
+                            <label class="filter-option">
+                                <input type="checkbox" name="category" value="kitchen">
+                                <span>Kitchen</span>
+                            </label>
+                            <label class="filter-option">
+                                <input type="checkbox" name="category" value="beauty">
+                                <span>Beauty</span>
+                            </label>
+                            <label class="filter-option">
+                                <input type="checkbox" name="category" value="tech">
+                                <span>Tech</span>
+                            </label>
+                            <label class="filter-option">
+                                <input type="checkbox" name="category" value="fitness">
+                                <span>Fitness</span>
+                            </label>
+                            <label class="filter-option">
+                                <input type="checkbox" name="category" value="office">
+                                <span>Office</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="filter-section">
+                        <h3 class="filter-title">Price Range</h3>
+                        <div class="filter-options">
+                            <label class="filter-option">
+                                <input type="checkbox" name="price" value="0-20">
+                                <span>Under $20</span>
+                            </label>
+                            <label class="filter-option">
+                                <input type="checkbox" name="price" value="20-40">
+                                <span>$20 - $40</span>
+                            </label>
+                            <label class="filter-option">
+                                <input type="checkbox" name="price" value="40-60">
+                                <span>$40 - $60</span>
+                            </label>
+                            <label class="filter-option">
+                                <input type="checkbox" name="price" value="60-100">
+                                <span>$60 - $100</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="filter-section">
+                        <h3 class="filter-title">Tags</h3>
+                        <div class="filter-options">
+                            <label class="filter-option">
+                                <input type="checkbox" name="tag" value="tiktok-viral">
+                                <span>TikTok Viral</span>
+                            </label>
+                            <label class="filter-option">
+                                <input type="checkbox" name="tag" value="trending">
+                                <span>Trending</span>
+                            </label>
+                            <label class="filter-option">
+                                <input type="checkbox" name="tag" value="aesthetic">
+                                <span>Aesthetic</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-secondary btn-block" id="clear-filters">Clear All Filters</button>
+                </aside>
+
+                <!-- Products Grid -->
+                <div class="products-main">
+                    <div class="product-grid" id="products-grid">
+                        <!-- Products loaded dynamically -->
+                    </div>
+                    <div id="no-results" class="no-results" style="display: none;">
+                        <p>No products found. Try adjusting your filters.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4 class="footer-title">
+                        <span class="logo-icon">🔥</span> TrendStore
+                    </h4>
+                    <p class="footer-text">Viral products before they sell out.</p>
+                </div>
+                <div class="footer-col">
+                    <h4 class="footer-title">Shop</h4>
+                    <ul class="footer-links">
+                        <li><a href="/products.html">All Products</a></li>
+                        <li><a href="/products.html?trending=true">Trending</a></li>
+                        <li><a href="/products.html?viral=true">Viral</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4 class="footer-title">Support</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">Shipping Info</a></li>
+                        <li><a href="#">Returns</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4 class="footer-title">Legal</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="/admin/login.html">Admin</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 TrendStore. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="/js/app.js"></script>
+    <script src="/js/products.js"></script>
+    <script src="/js/cart.js"></script>
+</body>
+</html>

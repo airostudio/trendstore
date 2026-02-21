@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - TrendStore</title>
+    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="login-page">
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="logo">
+                    <span class="logo-icon">🔥</span>
+                    <span class="logo-text">TrendStore</span>
+                </div>
+                <h1 class="login-title">Admin Portal</h1>
+                <p class="login-subtitle">Sign in to manage your store</p>
+            </div>
+
+            <form id="login-form" class="login-form">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="admin@trendstore.com"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Enter your password"
+                        required
+                    >
+                </div>
+
+                <div id="error-message" class="error-message" style="display: none;"></div>
+
+                <button type="submit" class="btn btn-primary btn-block">
+                    Sign In
+                </button>
+            </form>
+
+            <div class="login-footer">
+                <a href="/" class="back-link">← Back to Store</a>
+            </div>
+
+            <div class="demo-credentials">
+                <p><strong>Demo Credentials:</strong></p>
+                <p>Email: admin@trendstore.com</p>
+                <p>Password: TrendAdmin2026!</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Admin credentials (in production, this would be server-side)
+        const ADMIN_CREDENTIALS = [
+            {
+                email: 'admin@trendstore.com',
+                password: 'TrendAdmin2026!',
+                role: 'owner'
+            },
+            {
+                email: 'manager@trendstore.com',
+                password: 'Manager2026!',
+                role: 'admin'
+            }
+        ];
+
+        // Handle login
+        document.getElementById('login-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const errorMessage = document.getElementById('error-message');
+
+            // Find matching credentials
+            const user = ADMIN_CREDENTIALS.find(
+                cred => cred.email === email && cred.password === password
+            );
+
+            if (user) {
+                // Store session
+                sessionStorage.setItem('adminLoggedIn', 'true');
+                sessionStorage.setItem('adminEmail', user.email);
+                sessionStorage.setItem('adminRole', user.role);
+
+                // Redirect to dashboard
+                window.location.href = '/admin/index.html';
+            } else {
+                // Show error
+                errorMessage.textContent = 'Invalid email or password. Please try again.';
+                errorMessage.style.display = 'block';
+
+                // Shake animation
+                this.classList.add('shake');
+                setTimeout(() => this.classList.remove('shake'), 500);
+            }
+        });
+
+        // Check if already logged in
+        if (sessionStorage.getItem('adminLoggedIn') === 'true') {
+            window.location.href = '/admin/index.html';
+        }
+    </script>
+</body>
+</html>

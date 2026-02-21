@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - TrendStore Admin</title>
+    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="admin-page">
+    <!-- Sidebar -->
+    <aside class="admin-sidebar">
+        <div class="admin-logo">
+            <span class="logo-icon">🔥</span>
+            <span class="logo-text">TrendStore</span>
+        </div>
+
+        <nav class="admin-nav">
+            <a href="/admin/index.html" class="admin-nav-link">
+                <span class="nav-icon">📊</span>
+                <span>Dashboard</span>
+            </a>
+            <a href="/admin/products.html" class="admin-nav-link">
+                <span class="nav-icon">📦</span>
+                <span>Products</span>
+            </a>
+            <a href="/admin/orders.html" class="admin-nav-link">
+                <span class="nav-icon">🛒</span>
+                <span>Orders</span>
+            </a>
+            <a href="/admin/settings.html" class="admin-nav-link active">
+                <span class="nav-icon">⚙️</span>
+                <span>Settings</span>
+            </a>
+        </nav>
+
+        <div class="admin-user">
+            <div class="admin-user-info">
+                <p class="admin-user-name" id="admin-name">Admin</p>
+                <p class="admin-user-email" id="admin-email"></p>
+            </div>
+            <button class="btn-logout" id="logout-btn">Logout</button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+        <header class="admin-header">
+            <h1 class="admin-title">Settings</h1>
+        </header>
+
+        <div class="admin-content">
+            <div class="settings-container">
+                <div class="settings-section">
+                    <h2 class="settings-title">Store Information</h2>
+                    <div class="settings-grid">
+                        <div class="setting-item">
+                            <label>Store Name</label>
+                            <p id="store-name" class="setting-value">-</p>
+                        </div>
+                        <div class="setting-item">
+                            <label>Tagline</label>
+                            <p id="store-tagline" class="setting-value">-</p>
+                        </div>
+                        <div class="setting-item">
+                            <label>Contact Email</label>
+                            <p id="contact-email" class="setting-value">-</p>
+                        </div>
+                        <div class="setting-item">
+                            <label>Currency</label>
+                            <p id="currency" class="setting-value">-</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h2 class="settings-title">Shipping Settings</h2>
+                    <div class="settings-grid">
+                        <div class="setting-item">
+                            <label>Standard Shipping</label>
+                            <p class="setting-value" id="shipping-standard">-</p>
+                        </div>
+                        <div class="setting-item">
+                            <label>Express Shipping</label>
+                            <p class="setting-value" id="shipping-express">-</p>
+                        </div>
+                        <div class="setting-item">
+                            <label>Overnight Shipping</label>
+                            <p class="setting-value" id="shipping-overnight">-</p>
+                        </div>
+                        <div class="setting-item">
+                            <label>Free Shipping Threshold</label>
+                            <p class="setting-value" id="free-shipping-threshold">-</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h2 class="settings-title">Fees & Taxes</h2>
+                    <div class="settings-grid">
+                        <div class="setting-item">
+                            <label>Tax Rate</label>
+                            <p class="setting-value" id="tax-rate">-</p>
+                        </div>
+                        <div class="setting-item">
+                            <label>Processing Fee</label>
+                            <p class="setting-value" id="processing-fee">-</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h2 class="settings-title">Social Media</h2>
+                    <div class="settings-grid">
+                        <div class="setting-item">
+                            <label>TikTok</label>
+                            <p class="setting-value" id="social-tiktok">-</p>
+                        </div>
+                        <div class="setting-item">
+                            <label>Instagram</label>
+                            <p class="setting-value" id="social-instagram">-</p>
+                        </div>
+                        <div class="setting-item">
+                            <label>Twitter</label>
+                            <p class="setting-value" id="social-twitter">-</p>
+                        </div>
+                        <div class="setting-item">
+                            <label>Facebook</label>
+                            <p class="setting-value" id="social-facebook">-</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <p><strong>Note:</strong> Settings are loaded from <code>/data/settings.json</code>. To modify settings, edit that file directly.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="/js/admin-auth.js"></script>
+    <script>
+        // Load settings
+        window.addEventListener('DOMContentLoaded', async function() {
+            try {
+                const response = await fetch('/data/settings.json');
+                const settings = await response.json();
+
+                // Store info
+                document.getElementById('store-name').textContent = settings.siteName;
+                document.getElementById('store-tagline').textContent = settings.tagline;
+                document.getElementById('contact-email').textContent = settings.contactEmail;
+                document.getElementById('currency').textContent = settings.currency;
+
+                // Shipping
+                document.getElementById('shipping-standard').textContent = `$${settings.shipping.standard.cost} - ${settings.shipping.standard.estimatedDays}`;
+                document.getElementById('shipping-express').textContent = `$${settings.shipping.express.cost} - ${settings.shipping.express.estimatedDays}`;
+                document.getElementById('shipping-overnight').textContent = `$${settings.shipping.overnight.cost} - ${settings.shipping.overnight.estimatedDays}`;
+                document.getElementById('free-shipping-threshold').textContent = `$${settings.fees.freeShippingThreshold}`;
+
+                // Fees
+                document.getElementById('tax-rate').textContent = `${(settings.fees.tax * 100)}%`;
+                document.getElementById('processing-fee').textContent = `$${settings.fees.processingFee}`;
+
+                // Social
+                document.getElementById('social-tiktok').textContent = settings.social.tiktok;
+                document.getElementById('social-instagram').textContent = settings.social.instagram;
+                document.getElementById('social-twitter').textContent = settings.social.twitter;
+                document.getElementById('social-facebook').textContent = settings.social.facebook;
+
+            } catch (error) {
+                console.error('Error loading settings:', error);
+            }
+        });
+
+        // Logout handler
+        document.getElementById('logout-btn').addEventListener('click', function() {
+            sessionStorage.clear();
+            window.location.href = '/admin/login.html';
+        });
+    </script>
+</body>
+</html>

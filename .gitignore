@@ -1,25 +1,13 @@
 # Dependencies
 node_modules/
-.pnp
-.pnp.js
 
-# Testing
-coverage/
-
-# Next.js
-.next/
-out/
-build/
-dist/
-
-# Production
+# Logs
 *.log
 npm-debug.log*
 yarn-debug.log*
-yarn-error.log*
 pnpm-debug.log*
 
-# Environment variables
+# Environment variables (not used in static site)
 .env
 .env*.local
 
@@ -34,5 +22,6 @@ pnpm-debug.log*
 .DS_Store
 Thumbs.db
 
-# Misc
-*.tsbuildinfo
+# Temporary
+*.tmp
+.cache/
